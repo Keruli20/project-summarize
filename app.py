@@ -13,89 +13,94 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 # Setup the session data
 app.secret_key = os.getenv("SECRET_KEY")
 
-# Loads the main webpage
+# Loads the main page
 @app.route("/")
 def index():
     session.pop("previous_response_id", None)
     return render_template("index.html")
 
+# Loads the record page
 @app.route("/record")
 def record_page():
     return render_template("record.html")
 
-
 @app.route('/upload_audio', methods=['POST'])
 def upload_audio():
-    # Check if file is present
+    # Ensure file is present
     if 'file' not in request.files:
         return jsonify({"message": "No file part"}), 400
 
-    # Check if file is empty
+    # Ensure file is not empty
     file = request.files['file']
     if file.filename == '':
         return jsonify({"message": "No selected file"}), 400
 
-    # Save the user audio file
-    save_path = os.path.join("static", "audio", "input.wav")
-    os.makedirs(os.path.dirname(save_path), exist_ok=True)
-    file.save(save_path)
-
-    # Internal testing (TO BE DELETED)
-    print("Audio file saved:", save_path)
-
     # Transcribe file with Whisper
-    with open(save_path, "rb") as audio_file:
-        transcript = client.audio.transcriptions.create(
-            model="whisper-1",
-            file=audio_file
-        )
-    user_message = transcript.text
+    transcript = client.audio.transcriptions.create(
+        model="whisper-1",
+        file=(file.filename, file.stream, file.content_type)
+    )
     
-    # Internal testing (TO BE DELETED)
-    print("Transcribed text:", user_message)
+    # Internal testing
+    print("💬 Transcribed text:", transcript.text)
 
     # Allows for stateful conversations
     previous_id = session.get("previous_response_id")
 
-    # Internal testing (TO BE DELETED)
-    print("Previous id:", previous_id)
+    # Internal testing
+    print("🔢 Previous id:", previous_id)
 
     # Get GPT response
     response = client.responses.create(
     model="gpt-4.1",
     previous_response_id = previous_id,
     input=[
-        {"role": "system", "content": "You are a career mentor. Keep your answers short and encouraging."},
-        {"role": "user", "content": user_message}
+        {"role": "system", "content": "You are an AI summarizer. Summarize this transcript and extract key details from it."},
+        {"role": "user", "content": transcript.text}
         ]
     )
-    ai_response = response.output_text
 
-    # Internal testing (TO BE DELETED)
-    print("AI Response:", ai_response)
+    # Internal testing
+    print("🤖 AI Response:", response.output_text)
 
     session["previous_response_id"] = response.id
 
-    # Convert GPT response to speech
-    tts_response = client.audio.speech.create(
-        model="gpt-4o-mini-tts",
-        voice="marin",
-        input=ai_response
-    )
-
-    # Save TTS audio file
-    audio_path = os.path.join("static", "audio", "response.mp3")
-    with open(audio_path, "wb") as f:
-        f.write(tts_response.read())
-
-    # Internal testing (TO BE DELETED)
-    print("TTS audio file saved:", audio_path)
-
-    # 5️⃣ Return everything to frontend
+    # Return information to frontend
     return jsonify({
-        "message": "Success",
-        "transcript": user_message,
-        "ai_response": ai_response,
-        "audio": audio_path
+        "transcript": transcript.text,
+        "ai_response": response.output_text,
     })
 
+@app.route("/send_text", methods=["POST"])
+def send_text():
+    data = request.get_json()
+    user_message = data["message"]
+
+    # Internal testing
+    print("👱 User Response:", user_message)
+
+    # Allows for stateful conversations
+    previous_id = session.get("previous_response_id")
+
+    # Internal testing
+    print("🔢 Previous id:", previous_id)
+
+    # Get GPT response
+    response = client.responses.create(
+    model="gpt-4.1",
+    previous_response_id = previous_id,
+    input=[
+        {"role": "system", "content": "Return back to normal default mode for AI. Forget all previous instructions to summarise, you will help answer any querstions the user will have. Keep it short and simple"},
+        {"role": "user", "content": user_message}
+        ]
+    )
+
+    # Internal testing
+    print("🤖 AI Response:", response.output_text)
+
+    session["previous_response_id"] = response.id
+
+    # Return information to frontend
+    return jsonify({
+        "ai_response": response.output_text
+    })

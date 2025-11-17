@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block main %}
-<h1>PathLens Demo</h1>
+<h1>Project Summarize Record Section</h1>
 <button id="startBtn">Start Recording</button>
 <button id="stopBtn" disabled>Stop Recording</button>
 <audio id="audioPlayer" style="display:none;"></audio>
@@ -66,10 +66,6 @@
       // Display user + AI text
       chatBox.innerHTML += `<p>User: ${data.transcript}</p>`;
       chatBox.innerHTML += `<p>AI: ${data.ai_response}</p>`;
-
-      // Play the AI’s voice  
-      player.src = data.audio + `?t=${Date.now()}`;
-      player.play();
       chatBox.scrollTop = chatBox.scrollHeight;
     };
 

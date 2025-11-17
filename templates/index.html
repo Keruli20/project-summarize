@@ -1,13 +1,98 @@
 {% extends "base.html" %}
 
-{% block title %}
-
-{% endblock %}
+{% block title %}{% endblock %}
 
 {% block main %}
 <h1>Main page</h1>
-<form action="/upload_audio" method="POST">
-    <input type="file" id="myFile" name="filename">
-    <input type="submit">
+
+<form id="upload-file" enctype="multipart/form-data">
+    <input id="file-input" type="file" name="file" accept="audio/*, video/*">
+    <button type="submit">Upload</button>
 </form>
+
+<div id="spinner" class="text-center" style="display: none;">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p>Processing...</p>
+</div>
+
+<h2>Transcript Text</h2>
+<div id="transcript-box" class="chat-box container border rounded p-3 my-3"></div>
+
+<h2>AI Summary</h2>
+<div id="chat-box" class="chat-box container border rounded p-3 my-3"></div>
+
+<form id="ai-input">
+    <input id="ai-box" class="form-control" name="name" placeholder="Type to AI" type="text" required>
+    <button class="btn btn-primary" type="submit">Send</button>
+</form>
+
+<script>
+    const form = document.getElementById("upload-file");
+    const fileinput = document.getElementById("file-input");
+    const chatBox = document.getElementById("chat-box");
+    const spinner = document.getElementById("spinner");
+    const transcriptBox = document.getElementById("transcript-box");
+    const aiInput = document.getElementById("ai-input");
+    const aiBox = document.getElementById("ai-box");
+
+    form.addEventListener("submit", async (event) => {
+        event.preventDefault(); // STOP page reload
+
+        const file = fileinput.files[0];
+        if (!file) return alert("Please upload an audio file.");
+
+        // Show spinner before sending
+        spinner.style.display = "block";
+
+        const formData = new FormData();
+        formData.append("file", file);
+
+        const response = await fetch("/upload_audio", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await response.json();
+
+        // Hide spinner after receiving response
+        spinner.style.display = "none";
+
+        // Display user + AI text
+        transcriptBox.innerHTML += `<p>${data.transcript}</p>`;
+        chatBox.innerHTML += `<p>AI:${data.ai_response}</p>`;
+        chatBox.scrollTop = chatBox.scrollHeight;
+    });
+
+    aiInput.addEventListener("click", async () => {
+        event.preventDefault();
+
+        const text = aiBox.value.trim();
+        if (!text) return;
+
+        //To prevent XSS attack
+        const p = document.createElement("p");
+        p.textContent = "You: " + text;
+        chatBox.appendChild(p);
+        chatBox.scrollTop = chatBox.scrollHeight;
+
+        aiBox.value = "";
+
+        spinner.style.display = "block";
+
+        const response = await fetch("/send_text", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: text })
+        });
+
+        const data = await response.json();
+
+        spinner.style.display = "none";
+
+        const ai = document.createElement("p");
+        ai.textContent = "AI: " + data.ai_response
+        chatBox.appendChild(ai);
+        chatBox.scrollTop = chatBox.scrollHeight;
+    })
+</script>
 {% endblock %}
