@@ -6,11 +6,11 @@
 
 {% block main %}
 <h1>Project Summarize Record Section</h1>
-<button id="startBtn">Start Recording</button>
-<button id="stopBtn" disabled>Stop Recording</button>
-<audio id="audioPlayer" style="display:none;"></audio>
+<button id="start-button" class="btn btn-primary">Start Recording</button>
+<button id="stop-button" class="btn btn-primary" disabled>Stop Recording</button>
+<audio id="audio-player" style="display:none;"></audio>
 
-<div id="loading-spinner" class="text-center" style="display: none;">
+<div id="spinner" class="text-center" style="display: none;">
   <div class="spinner-border text-primary" role="status"></div>
   <p>Processing...</p>
 </div>
@@ -21,14 +21,14 @@
   let mediaRecorder;
   let audioChunks = [];
 
-  const startBtn = document.getElementById("startBtn");
-  const stopBtn = document.getElementById("stopBtn");
-  const player = document.getElementById("audioPlayer");
+  const startButton = document.getElementById("start-button");
+  const stopButton = document.getElementById("stop-button");
+  const player = document.getElementById("audio-player");
   const chatBox = document.getElementById("chat-box");
-  const spinner = document.getElementById("loading-spinner");
+  const spinner = document.getElementById("spinner");
 
   // Starts the recording
-  startBtn.onclick = async () => {
+  startButton.onclick = async () => {
     // Ask to use the microphone
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     // Listens to live audio and records it
@@ -70,15 +70,15 @@
     };
 
     mediaRecorder.start();
-    startBtn.disabled = true;
-    stopBtn.disabled = false;
+    startButton.disabled = true;
+    stopButton.disabled = false;
   };
 
   // Stops the recording
-  stopBtn.onclick = () => {
+  stopButton.onclick = () => {
     mediaRecorder.stop();
-    startBtn.disabled = false;
-    stopBtn.disabled = true;
+    startButton.disabled = false;
+    stopButton.disabled = true;
   };
 </script>
 

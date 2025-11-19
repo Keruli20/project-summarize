@@ -21,16 +21,20 @@ def index():
 
 # Loads the record page
 @app.route("/record")
-def record_page():
+def record():
     return render_template("record.html")
+
+@app.route("/youtube")
+def youtube():
+    return render_template("youtube.html")
 
 @app.route('/upload_audio', methods=['POST'])
 def upload_audio():
-    # Ensure file is present
+    # Ensure that file is present
     if 'file' not in request.files:
         return jsonify({"message": "No file part"}), 400
 
-    # Ensure file is not empty
+    # Ensure that file is not empty
     file = request.files['file']
     if file.filename == '':
         return jsonify({"message": "No selected file"}), 400
@@ -50,12 +54,54 @@ def upload_audio():
     # Internal testing
     print("🔢 Previous id:", previous_id)
 
+   # Transcript Prompt
+    transcript_prompt = """
+You are an expert summarizer for videos, lectures, long-form speech, and audio recordings. 
+Your job is to create a high-quality, structured summary of the transcript provided.
+
+Follow this exact format using Markdown:
+
+### 1. Short Summary (3-5 sentences)
+A brief overview of the main topic and purpose.
+
+### 2. Key Points
+- Bullet-point list of the main ideas
+- Break down the lecture logically
+- Preserve the speaker's intent
+
+### 3. Important Details
+Include essential:
+- Examples
+- Facts
+- Definitions
+- Explanations
+- References (if mentioned)
+
+### 4. Key Takeaways
+3-6 of the most important things the user should remember.
+
+### 5. Action Items (if any)
+Steps, advice, or instructions given by the speaker.
+
+### 6. Unanswered Questions / Ambiguities
+Mention anything unclear, incomplete, or not explained well.
+
+### 7. Beginner-Friendly Explanation
+A simple explanation of the topic that a new learner can understand.
+
+Rules:
+- Do NOT add information that does not exist in the transcript.
+- Keep the structure clean.
+- Preserve the meaning and tone of the speaker.
+- If the audio is unclear or incomplete, state it politely.
+"""
+
     # Get GPT response
     response = client.responses.create(
     model="gpt-4.1",
     previous_response_id = previous_id,
     input=[
-        {"role": "system", "content": "You are an AI summarizer. Summarize this transcript and extract key details from it."},
+        {"role": "system", "content": transcript_prompt},
         {"role": "user", "content": transcript.text}
         ]
     )
@@ -63,7 +109,9 @@ def upload_audio():
     # Internal testing
     print("🤖 AI Response:", response.output_text)
 
-    session["previous_response_id"] = response.id
+    session["summary"] = response.output_text
+
+    session["previous_response_id"] = None
 
     # Return information to frontend
     return jsonify({
@@ -85,12 +133,30 @@ def send_text():
     # Internal testing
     print("🔢 Previous id:", previous_id)
 
+    chat_prompt = f"""
+You are now in normal conversational mode. 
+The user may ask questions about the uploaded transcript, or may ask unrelated questions.
+
+Use the summary below as helpful context when needed, but do NOT summarize anything unless the user explicitly asks.
+
+--- SUMMARY CONTEXT ---
+{session.get('summary', 'No summary available yet.')}
+--- END SUMMARY ---
+
+Your behavior:
+- Answer questions clearly and naturally.
+- Refer to the summary if the user asks about the lecture/video.
+- If the question is unrelated, respond normally.
+- Keep responses concise unless the user asks for detail.
+- If the user asks for deeper analysis, provide it.
+"""
+
     # Get GPT response
     response = client.responses.create(
     model="gpt-4.1",
     previous_response_id = previous_id,
     input=[
-        {"role": "system", "content": "Return back to normal default mode for AI. Forget all previous instructions to summarise, you will help answer any querstions the user will have. Keep it short and simple"},
+        {"role": "system", "content": chat_prompt},
         {"role": "user", "content": user_message}
         ]
     )

@@ -17,7 +17,7 @@
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-brand" href="#">Project Summarize</a>
+                <a class="navbar-brand" href="/">Project Summarize</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
                     aria-label="Toggle navigation">
@@ -26,9 +26,11 @@
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
                         <a class="nav-link {% if request.path == '/' %}active{% endif %}" aria-current="page"
-                            href="/">Home</a>
+                            href="/">Upload File</a>
                         <a class="nav-link {% if request.path == '/record' %}active{% endif %}"
                             href="/record">Record</a>
+                        <a class="nav-link {% if request.path == '/youtube' %}active{% endif %}"
+                            href="/youtube">Youtube</a>
                     </div>
                 </div>
             </div>
@@ -36,13 +38,13 @@
     </header>
 
     <!-- Main content -->
-    <main class="container mt-4">
+    <main class="container py-5">
         {% block main %}{% endblock %}
     </main>
 
     <!-- Footer -->
     <footer class="mt-5 mb-3 text-center text-muted">
-        <small>© 2025 Project Summarize</small>
+        <p>© 2025 Project Summarize</p>
     </footer>
 
 </body>
