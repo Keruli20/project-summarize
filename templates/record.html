@@ -5,81 +5,34 @@
 {% endblock %}
 
 {% block main %}
-<h1>Project Summarize Record Section</h1>
+<h2>Record</h2>
 <button id="start-button" class="btn btn-primary">Start Recording</button>
 <button id="stop-button" class="btn btn-primary" disabled>Stop Recording</button>
 <audio id="audio-player" style="display:none;"></audio>
 
+<a id="download" class="btn btn-success mt-3" style="display:none;">Download Recording</a>
+
 <div id="spinner" class="text-center" style="display: none;">
-  <div class="spinner-border text-primary" role="status"></div>
-  <p>Processing...</p>
+    <div class="spinner-border text-primary" role="status"></div>
+    <p>Processing...</p>
 </div>
 
-<div id="chat-box" class="chat-box container border rounded p-3 my-3"></div>
+<h2>Transcript Text</h2>
+<div id="transcript-box" class="chat-box container border rounded mb-4"></div>
 
-<script>
-  let mediaRecorder;
-  let audioChunks = [];
+<h2>AI Summary</h2>
+<div id="summary-box" class="chat-box container border rounded mb-4"></div>
 
-  const startButton = document.getElementById("start-button");
-  const stopButton = document.getElementById("stop-button");
-  const player = document.getElementById("audio-player");
-  const chatBox = document.getElementById("chat-box");
-  const spinner = document.getElementById("spinner");
+<h2>AI Chat</h2>
+<div id="chat-box" class="chat-box container border rounded mb-4"></div>
+<div class="mt-4">
+    <form id="ai-form">
+        <input id="ai-input" class="form-control" name="name" placeholder="Type to AI" type="text" required>
+        <button class="btn btn-primary mt-3" type="submit">Send</button>
+    </form>
+</div>
 
-  // Starts the recording
-  startButton.onclick = async () => {
-    // Ask to use the microphone
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    // Listens to live audio and records it
-    mediaRecorder = new MediaRecorder(stream);
-    audioChunks = [];
-    
-    // Store chunks of audio as they arrive
-    mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
-
-    mediaRecorder.onstop = async () => {
-      // Merge audio chunks full audio
-      const audioBlob = new Blob(audioChunks, { type: "audio/wav" });
-      const formData = new FormData();
-      formData.append("file", audioBlob, "input.wav");
-
-      // Show spinner before sending
-      spinner.style.display = "block";
-
-      // Sends audio to Flask
-      const response = await fetch("/upload_audio", {
-        method: "POST",
-        body: formData
-      });
-      const data = await response.json();
-
-
-      // Backend stuff happens
-
-
-      // Hide spinner after receiving response
-      spinner.style.display = "none";
-
-      console.log("Flask Response:", data);
-
-      // Display user + AI text
-      chatBox.innerHTML += `<p>User: ${data.transcript}</p>`;
-      chatBox.innerHTML += `<p>AI: ${data.ai_response}</p>`;
-      chatBox.scrollTop = chatBox.scrollHeight;
-    };
-
-    mediaRecorder.start();
-    startButton.disabled = true;
-    stopButton.disabled = false;
-  };
-
-  // Stops the recording
-  stopButton.onclick = () => {
-    mediaRecorder.stop();
-    startButton.disabled = false;
-    stopButton.disabled = true;
-  };
-</script>
-
+<script src="https://cdn.jsdelivr.net/npm/marked@17.0.0/lib/marked.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/dompurify@3.3.0/dist/purify.min.js"></script>
+<script src="static/JS/index.js"></script>
 {% endblock %}

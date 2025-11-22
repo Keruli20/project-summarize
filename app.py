@@ -24,10 +24,6 @@ def index():
 def record():
     return render_template("record.html")
 
-@app.route("/youtube")
-def youtube():
-    return render_template("youtube.html")
-
 @app.route('/upload_audio', methods=['POST'])
 def upload_audio():
     # Ensure that file is present

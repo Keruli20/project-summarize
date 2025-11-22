@@ -3,8 +3,8 @@
 {% block title %}{% endblock %}
 
 {% block main %}
-<h1>Upload File</h1>
 
+<h1>Upload File</h1>
 <form id="upload-file" class="mb-4" enctype="multipart/form-data">
     <input id="file-input" type="file" name="file" accept="audio/*, video/*">
     <button class="btn btn-primary" type="submit">Upload</button>
@@ -12,7 +12,7 @@
 
 <div id="spinner" class="text-center" style="display: none;">
     <div class="spinner-border text-primary" role="status"></div>
-    <p>Processing... Please be patient it's not a bug</p>
+    <p>Processing...</p>
 </div>
 
 <h2>Transcript Text</h2>
@@ -32,96 +32,5 @@
 
 <script src="https://cdn.jsdelivr.net/npm/marked@17.0.0/lib/marked.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.3.0/dist/purify.min.js"></script>
-<script>
-    const form = document.getElementById("upload-file");
-    const fileinput = document.getElementById("file-input");
-    const summaryBox = document.getElementById("summary-box");
-    const chatBox = document.getElementById("chat-box");
-    const spinner = document.getElementById("spinner");
-    const transcriptBox = document.getElementById("transcript-box");
-    const aiForm = document.getElementById("ai-form");
-    const aiInput = document.getElementById("ai-input");
-
-    form.addEventListener("submit", async (event) => {
-        // Stop the page from reloading after submitting
-        event.preventDefault();
-
-        // Ensure that file is present
-        const file = fileinput.files[0];
-        if (!file) return alert("Please upload an audio file.");
-
-        // Show loading spinner
-        spinner.style.display = "block";
-
-        // Sends the file to the backend
-        const formData = new FormData();
-        formData.append("file", file);
-
-        const response = await fetch("/upload_audio", {
-            method: "POST",
-            body: formData
-        });
-        const data = await response.json();
-
-        // Hide loading spinner
-        spinner.style.display = "none";
-
-        // Display transcribed text
-        const t = document.createElement("p");
-        t.textContent = data.transcript
-        transcriptBox.appendChild(t);
-
-        // Display summarised text
-        const c = document.createElement("div");
-        let html = marked.parse(data.ai_response);
-        html = DOMPurify.sanitize(html);
-        c.innerHTML = html
-        summaryBox.appendChild(c);
-
-        summaryBox.scrollTop = summaryBox.scrollHeight;
-    });
-
-    aiForm.addEventListener("submit", async (event) => {
-        // Stop the page from reloading after submitting
-        event.preventDefault();
-
-        // Gets the text from the input field
-        const text = aiInput.value.trim();
-        if (!text) return;
-
-        // Displays user text
-        const u = document.createElement("div");
-        let user = marked.parse("<strong>You: </strong>" + text);
-        user = DOMPurify.sanitize(user);
-        u.innerHTML = user;
-        chatBox.appendChild(u);
-        chatBox.scrollTop = chatBox.scrollHeight;
-
-        // Clears the input field after submitting
-        aiInput.value = "";
-
-        // Show loading spinner
-        spinner.style.display = "block";
-
-        // Sends the input to the backend
-        const response = await fetch("/send_text", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ message: text })
-        });
-        const data = await response.json();
-
-        // Hides loading spinner
-        spinner.style.display = "none";
-
-        // Displays AI text
-        const ai = document.createElement("div");
-        let html = marked.parse("<strong>AI: </strong>" + data.ai_response);
-        html = DOMPurify.sanitize(html);
-        ai.innerHTML = html;
-        chatBox.appendChild(ai);
-
-        chatBox.scrollTop = chatBox.scrollHeight;
-    })
-</script>
+<script src="static/JS/index.js"></script>
 {% endblock %}
