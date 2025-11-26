@@ -33,14 +33,34 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
+    // function renderChat(role, text) {
+    //     const t = document.createElement("div");
+    //     let html = marked.parse(`<strong>${role}: </strong>${text}`);
+    //     html = DOMPurify.sanitize(html);
+    //     t.innerHTML = html;
+    //     chatBox.appendChild(t);
+    //     chatBox.scrollTop = chatBox.scrollHeight;
+    // }
+
     function renderChat(role, text) {
-        const t = document.createElement("div");
-        let html = marked.parse(`<strong>${role}: </strong>${text}`);
-        html = DOMPurify.sanitize(html);
-        t.innerHTML = html;
-        chatBox.appendChild(t);
+        const block = document.createElement("div");
+
+        if (role === "You") {
+            // User bubble (right side)
+            block.className = "chat-bubble user";
+        } else {
+            // AI message – no bubble, plain block like ChatGPT
+            block.className = "ai-message";
+        }
+
+        let html = marked.parse(text);
+        block.innerHTML = DOMPurify.sanitize(html);
+
+        chatBox.appendChild(block);
         chatBox.scrollTop = chatBox.scrollHeight;
     }
+
+
 
     function clearAllOutputs() {
         transcriptBox.innerHTML = "";
@@ -87,6 +107,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Ask to use the microphone
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+            startButton.classList.remove("btn-dark");
+            startButton.classList.add("btn-danger");
+            startButton.textContent = "Recording...";
+
             // Listens to live audio and records it
             mediaRecorder = new MediaRecorder(stream);
             audioChunks = [];
@@ -131,6 +156,10 @@ document.addEventListener("DOMContentLoaded", () => {
             mediaRecorder.stop();
             startButton.disabled = false;
             stopButton.disabled = true;
+            startButton.classList.remove("btn-danger");
+            startButton.classList.add("btn-dark");
+            startButton.textContent = "Start Recording";
+
         };
     }
 

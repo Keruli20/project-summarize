@@ -1,5 +1,50 @@
+body {
+    background-color: white;
+    font-family: "Open Sans", system-ui;
+    color: black;
+}
+
+/* Header (Navbar) */
+.navbar {
+    background: white !important;
+}
+
+/* .nav-link.active {
+    color: #0D6EFD !important;
+} */
+
+/* Page container spacing */
+main.container {
+    max-width: 1000px;
+}
+
+/* Chat/Transcript/Summary Boxes */
 .chat-box {
-    background: #f9f9f9;
-    height: 300px;
-    overflow-y: auto;
+    background: white;
+    padding: 1.2rem;
+    min-height: 120px;
+}
+
+.btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: 9999px;
+}
+
+/* Chat Bubbles */
+.chat-bubble {
+    max-width: 80%;
+    padding: 0.8rem;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    word-wrap: break-word;
+}
+
+.chat-bubble.user {
+    background: #F4F4F4;
+    margin-left: auto;
+}
+
+#ai-input {
+    padding: 0.8rem 1.2rem;
+    border-radius: 9999px;
 }
