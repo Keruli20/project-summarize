@@ -17,8 +17,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 </head>
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="/static/styles.css">
+<!-- CSS -->
+<link rel="stylesheet" href="/static/styles.css">
 
 <body>
     <!-- Header -->
@@ -32,11 +32,11 @@
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div class="navbar-nav">
-                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" {% if request.path == '/' %}aria-current="page"{% endif %}
-                            href="/">Upload File</a>
-                        <a class="nav-link {% if request.path == '/record' %}active{% endif %}" {% if request.path == '/record' %}aria-current="page"{% endif %}
-                            href="/record">Record</a>
+                    <div class="navbar-nav ms-auto">
+                        <a class="nav-link {% if request.path == '/' %}active{% endif %}" {% if request.path=='/'
+                            %}aria-current="page" {% endif %} href="/">Upload File</a>
+                        <a class="nav-link {% if request.path == '/record' %}active{% endif %}" {% if
+                            request.path=='/record' %}aria-current="page" {% endif %} href="/record">Record</a>
                     </div>
                 </div>
             </div>

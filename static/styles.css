@@ -4,46 +4,42 @@ body {
     color: black;
 }
 
-/* Header (Navbar) */
+/* Navbar */
 .navbar {
     background: white !important;
 }
 
-/* .nav-link.active {
-    color: #0D6EFD !important;
-} */
-
-/* Page container spacing */
+/* Page container width */
 main.container {
     max-width: 1000px;
 }
 
-/* Chat/Transcript/Summary Boxes */
+/* TODO: Overflow text */
+/* Transcript & Chat Boxes */
 .chat-box {
     background: white;
     padding: 1.2rem;
     min-height: 120px;
 }
 
+/* All buttons on the page */
 .btn {
     padding: 0.6rem 1.2rem;
     border-radius: 9999px;
 }
 
-/* Chat Bubbles */
+/* Chat Bubble */
 .chat-bubble {
     max-width: 80%;
     padding: 0.8rem;
     border-radius: 12px;
     margin-bottom: 12px;
     word-wrap: break-word;
-}
-
-.chat-bubble.user {
     background: #F4F4F4;
     margin-left: auto;
 }
 
+/* AI Input */
 #ai-input {
     padding: 0.8rem 1.2rem;
     border-radius: 9999px;

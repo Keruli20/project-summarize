@@ -8,67 +8,61 @@ document.addEventListener("DOMContentLoaded", () => {
     const stopButton = document.getElementById("stop-button");
 
     const transcriptBox = document.getElementById("transcript-box");
-    const summaryBox = document.getElementById("summary-box");
     const chatBox = document.getElementById("chat-box");
     const spinner = document.getElementById("spinner");
+    const downloadbutton = document.getElementById("download");
 
     let mediaRecorder;
     let audioChunks = [];
 
     // Functions
+
+    // Shows and hides the loading spinner
     function startSpinner() {
         spinner.style.display = "block";
     }
-
     function stopSpinner() {
         spinner.style.display = "none";
     }
 
-    function renderTranscriptResponse(text, box) {
-        const t = document.createElement("div");
+    // Renders the text inside the transcript box
+    function renderTranscript(text, box) {
+        const div = document.createElement("div");
         let html = DOMPurify.sanitize(marked.parse(text));
-        t.innerHTML = html;
-        box.appendChild(t);
+        div.innerHTML = html;
+        box.appendChild(div);
         chatBox.scrollTop = chatBox.scrollHeight;
-
     }
 
-    // function renderChat(role, text) {
-    //     const t = document.createElement("div");
-    //     let html = marked.parse(`<strong>${role}: </strong>${text}`);
-    //     html = DOMPurify.sanitize(html);
-    //     t.innerHTML = html;
-    //     chatBox.appendChild(t);
-    //     chatBox.scrollTop = chatBox.scrollHeight;
-    // }
+    // Renders the text inside the chatbox
+    function renderChat(isUser, text) {
+        const div = document.createElement("div");
 
-    function renderChat(role, text) {
-        const block = document.createElement("div");
-
-        if (role === "You") {
-            // User bubble (right side)
-            block.className = "chat-bubble user";
-        } else {
-            // AI message – no bubble, plain block like ChatGPT
-            block.className = "ai-message";
+        if (isUser) {
+            div.className = "chat-bubble";
         }
 
         let html = marked.parse(text);
-        block.innerHTML = DOMPurify.sanitize(html);
-
-        chatBox.appendChild(block);
+        div.innerHTML = DOMPurify.sanitize(html);
+        chatBox.appendChild(div);
         chatBox.scrollTop = chatBox.scrollHeight;
     }
 
-
+    // Shows and hides the download Button
+    function showDownloadButton() {
+        downloadbutton.style.display = "inline-block";
+    }
+    function hideDownloadButton() {
+        downloadbutton.style.display = "none";
+    }
 
     function clearAllOutputs() {
         transcriptBox.innerHTML = "";
-        summaryBox.innerHTML = "";
         chatBox.innerHTML = "";
+        aiInput.value = "";
     }
 
-    // File Upload
+    // File Upload Section
     if (form) {
         form.addEventListener("submit", async (event) => {
             // Stop the page from reloading after submitting
@@ -93,17 +87,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             stopSpinner();
 
-            renderTranscriptResponse(data.transcript, transcriptBox)
-
-            renderTranscriptResponse(data.ai_response, summaryBox)
+            renderTranscript(data.transcript, transcriptBox)
+            renderChat(false, data.ai_response)
         });
     }
 
-    // Recording
+    // Recording Section
     if (startButton) {
         startButton.onclick = async () => {
 
             clearAllOutputs();
+            hideDownloadButton();
 
             // Ask to use the microphone
             const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -128,10 +122,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 startSpinner();
 
                 const url = URL.createObjectURL(audioBlob);
-                const link = document.getElementById("download");
-                link.href = url;
-                link.download = "recording.wav";
-                link.style.display = "inline-block";
+                downloadbutton.href = url;
+                downloadbutton.download = "recording.wav";
+                showDownloadButton();
 
                 const response = await fetch("/upload_audio", {
                     method: "POST",
@@ -141,8 +134,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 stopSpinner();
 
-                renderTranscriptResponse(data.transcript, transcriptBox)
-                renderTranscriptResponse(data.ai_response, summaryBox)
+                renderTranscript(data.transcript, transcriptBox)
+                renderChat(false, data.ai_response)
             };
             startButton.disabled = true;
             stopButton.disabled = false;
@@ -159,10 +152,10 @@ document.addEventListener("DOMContentLoaded", () => {
             startButton.classList.remove("btn-danger");
             startButton.classList.add("btn-dark");
             startButton.textContent = "Start Recording";
-
         };
     }
 
+    // Type to the AI chatbot
     aiForm.addEventListener("submit", async (event) => {
         // Stop the page from reloading after submitting
         event.preventDefault();
@@ -171,7 +164,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const text = aiInput.value.trim();
         if (!text) return;
 
-        renderChat("You", text)
+        // Render user message
+        renderChat(true, text)
 
         // Clears the input field after submitting
         aiInput.value = "";
@@ -188,7 +182,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         stopSpinner();
 
-        renderChat("AI", data.ai_response)
+        // Render AI response
+        renderChat(false, data.ai_response)
     });
 });
 

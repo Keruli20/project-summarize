@@ -160,7 +160,7 @@ Your behavior:
     # Internal testing
     print("🤖 AI Response:", response.output_text)
 
-    session["previous_response_id"] = response.id
+    session["previous_response_id"] = None
 
     # Return information to frontend
     return jsonify({
