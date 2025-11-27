@@ -5,12 +5,14 @@
 {% endblock %}
 
 {% block main %}
-<h1>Record Audio</h1>
-<div class="mb-4 d-flex align-items-center gap-3">
-    <button id="start-button" class="btn btn-dark">Start Recording</button>
-    <button id="stop-button" class="btn btn-dark" disabled>Stop Recording</button>
-    <a id="download" class="btn btn-outline-dark" style="display:none;">Download Audio</a>
-    <audio id="audio-player" style="display:none;"></audio>
+<div class="text-center mx-auto">
+    <h1>Record Audio</h1>
+    <div class="mb-4 d-flex justify-content-center gap-3 mt-4">
+        <button id="start-button" class="btn btn-dark">Start Recording</button>
+        <button id="stop-button" class="btn btn-dark" disabled>Stop Recording</button>
+        <a id="download" class="btn btn-outline-dark" style="display:none;">Download Audio</a>
+        <audio id="audio-player" style="display:none;"></audio>
+    </div>
 </div>
 
 <!-- Loading Spinner -->
@@ -21,18 +23,31 @@
     <p>Processing...</p>
 </div>
 
-<h4>Transcript Text</h4>
-<div id="transcript-box" class="chat-box border rounded mb-4 shadow-sm"></div>
+<!-- TODO: Add copy svg to the bottom right of the box for easy copy -->
+<div class="row">
+    <!-- Transcript Box -->
+    <div class="col-md-4">
+        <h4 class="text-center">Transcript Text</h4>
+        <div id="transcript-box" class="chat-box border rounded mb-4 shadow-sm"></div>
+    </div>
 
-<h4>AI Chat</h4>
-<div id="chat-box" class="chat-box border rounded mb-4 shadow-sm"></div>
-<div class="mt-4">
+    <!-- AI Chatbox -->
+    <div class="col-md-8">
+        <h4 class="text-center">AI Chat</h4>
+        <div id="chat-box" class="chat-box border rounded mb-4 shadow-sm"></div>
+    </div>
+</div>
+
+<!-- User Input -->
+<div class="mt-4 text-center">
     <form id="ai-form">
-        <input id="ai-input" class="form-control" name="name" placeholder="Type to AI" type="text" required>
+        <textarea id="ai-input" class="form-control" autocomplete="off" placeholder="Type to AI" rows="1"
+            required></textarea>
         <button class="btn btn-dark mt-3" type="submit">Send</button>
     </form>
 </div>
 
+<!-- JS Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/marked@17.0.0/lib/marked.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/dompurify@3.3.0/dist/purify.min.js"></script>
 <script src="static/index.js"></script>

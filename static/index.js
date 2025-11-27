@@ -185,5 +185,26 @@ document.addEventListener("DOMContentLoaded", () => {
         // Render AI response
         renderChat(false, data.ai_response)
     });
+
+    aiInput.addEventListener("input", () => {
+        aiInput.style.height = "auto";
+
+        const maxHeight = 120;
+        const height = aiInput.scrollHeight;
+
+        if (height < maxHeight) {
+            aiInput.style.height = height + "px";
+            aiInput.style.overflowY = "hidden";
+        } else {
+            aiInput.style.height = maxHeight + "px";
+            aiInput.style.overflowY = "auto";
+        }
+
+        if (height <= 50) {
+            aiInput.style.borderRadius = "9999px";
+        } else {
+            aiInput.style.borderRadius = "24px";
+        }
+    });
 });
 

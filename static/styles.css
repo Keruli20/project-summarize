@@ -19,7 +19,7 @@ main.container {
 .chat-box {
     background: white;
     padding: 1.2rem;
-    min-height: 120px;
+    min-height: 480px;
 }
 
 /* All buttons on the page */
@@ -41,6 +41,9 @@ main.container {
 
 /* AI Input */
 #ai-input {
+    resize: none;
+    overflow-y: auto;
     padding: 0.8rem 1.2rem;
     border-radius: 9999px;
+    max-height: 150px;
 }

@@ -50,6 +50,7 @@ def upload_audio():
     # Internal testing
     print("🔢 Previous id:", previous_id)
 
+    # TODO: Work on instructions prompt
    # Transcript Prompt
     transcript_prompt = """
 You are an expert summarizer for videos, lectures, long-form speech, and audio recordings. 
@@ -105,7 +106,7 @@ Rules:
     # Internal testing
     print("🤖 AI Response:", response.output_text)
 
-    session["summary"] = response.output_text
+    session["transcript"] = transcript.text
 
     session["previous_response_id"] = None
 
@@ -136,7 +137,7 @@ The user may ask questions about the uploaded transcript, or may ask unrelated q
 Use the summary below as helpful context when needed, but do NOT summarize anything unless the user explicitly asks.
 
 --- SUMMARY CONTEXT ---
-{session.get('summary', 'No summary available yet.')}
+{session.get('transcript', 'No transcript available yet.')}
 --- END SUMMARY ---
 
 Your behavior:
@@ -160,7 +161,7 @@ Your behavior:
     # Internal testing
     print("🤖 AI Response:", response.output_text)
 
-    session["previous_response_id"] = None
+    session["previous_response_id"] = response.id
 
     # Return information to frontend
     return jsonify({

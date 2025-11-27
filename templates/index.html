@@ -5,11 +5,13 @@
 {% block main %}
 
 <!-- Upload File Section -->
-<h1>Upload File</h1>
-<form id="upload-file" class="mb-4" enctype="multipart/form-data">
-    <input id="file-input" type="file" name="file" accept="audio/*, video/*">
-    <button class="btn btn-dark" type="submit">Upload</button>
-</form>
+<div class="text-center w-50 mx-auto">
+    <h1>Upload File</h1>
+    <form id="upload-file" class="mb-4 mt-4" enctype="multipart/form-data">
+        <input id="file-input" class="form-control mb-4" type="file" name="file" accept="audio/*, video/*">
+        <button class="btn btn-dark" type="submit">Upload</button>
+    </form>
+</div>
 
 <!-- Loading Spinner -->
 <div id="spinner" class="text-center" style="display: none;">
@@ -20,19 +22,25 @@
 </div>
 
 <!-- TODO: Add copy svg to the bottom right of the box for easy copy -->
-<!-- Transcript Box Section -->
-<h4>Transcript Text</h4>
-<div id="transcript-box" class="chat-box border rounded mb-4 shadow-sm"></div>
+<div class="row">
+    <!-- Transcript Box -->
+    <div class="col-md-4">
+        <h4 class="text-center">Transcript</h4>
+        <div id="transcript-box" class="chat-box border rounded mb-4 shadow-sm"></div>
+    </div>
 
-<!-- AI Chat Section -->
-<h4>AI Chat</h4>
-<div id="chat-box" class="chat-box border rounded mb-4 shadow-sm"></div>
+    <!-- AI Chatbox -->
+    <div class="col-md-8">
+        <h4 class="text-center">AI Chat</h4>
+        <div id="chat-box" class="chat-box border rounded mb-4 shadow-sm"></div>
+    </div>
+</div>
 
-<!-- TODO: Ensure that type to AI input can resize to fit user input -->
-<!-- Chatbox -->
-<div class="mt-4">
+<!-- User Input -->
+<div class="mt-4 text-center">
     <form id="ai-form">
-        <input id="ai-input" class="form-control" name="name" placeholder="Type to AI" type="text" required>
+        <textarea id="ai-input" class="form-control" autocomplete="off" placeholder="Type to AI" rows="1"
+            required></textarea>
         <button class="btn btn-dark mt-3" type="submit">Send</button>
     </form>
 </div>
