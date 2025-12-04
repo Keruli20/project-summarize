@@ -10,7 +10,7 @@
     <div class="mb-4 d-flex justify-content-center gap-3 mt-4">
         <button id="start-button" class="btn btn-dark">Start Recording</button>
         <button id="stop-button" class="btn btn-dark" disabled>Stop Recording</button>
-        <a id="download" class="btn btn-outline-dark" style="display:none;">Download Audio</a>
+        <a id="download-button" class="btn btn-outline-dark" style="display:none;">Download Audio</a>
         <audio id="audio-player" style="display:none;"></audio>
     </div>
 </div>
@@ -23,12 +23,14 @@
     <p>Processing...</p>
 </div>
 
-<!-- TODO: Add copy svg to the bottom right of the box for easy copy -->
 <div class="row">
     <!-- Transcript Box -->
     <div class="col-md-4">
-        <h4 class="text-center">Transcript Text</h4>
-        <div id="transcript-box" class="chat-box border rounded mb-4 shadow-sm"></div>
+        <h4 class="text-center">Transcript</h4>
+        <div id="transcript-box" class="chat-box border rounded mb-2 shadow-sm"></div>
+        <div class="text-center mt-2">
+            <button id="copy-transcript" class="btn btn-outline-dark">Copy</button>
+        </div>
     </div>
 
     <!-- AI Chatbox -->

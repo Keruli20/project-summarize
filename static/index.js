@@ -10,7 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const transcriptBox = document.getElementById("transcript-box");
     const chatBox = document.getElementById("chat-box");
     const spinner = document.getElementById("spinner");
-    const downloadbutton = document.getElementById("download");
+    const downloadButton = document.getElementById("download-button");
+    const copyButton = document.getElementById("copy-transcript");
 
     let mediaRecorder;
     let audioChunks = [];
@@ -50,10 +51,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Shows and hides the download Button
     function showDownloadButton() {
-        downloadbutton.style.display = "inline-block";
+        downloadButton.style.display = "inline-block";
     }
     function hideDownloadButton() {
-        downloadbutton.style.display = "none";
+        downloadButton.style.display = "none";
+    }
+
+    // Change download & copy button to success state
+    function changeToSuccessButton(button, text) {
+        button.classList.remove("btn-outline-dark");
+        button.classList.add("btn-success");
+        button.textContent = text;
     }
 
     function clearAllOutputs() {
@@ -120,10 +128,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 formData.append("file", audioBlob, "input.wav");
 
                 startSpinner();
-
+                // TODO: Turn this into an MP3
                 const url = URL.createObjectURL(audioBlob);
-                downloadbutton.href = url;
-                downloadbutton.download = "recording.wav";
+                downloadButton.href = url;
+                downloadButton.download = "recording.wav";
                 showDownloadButton();
 
                 const response = await fetch("/upload_audio", {
@@ -153,6 +161,16 @@ document.addEventListener("DOMContentLoaded", () => {
             startButton.classList.add("btn-dark");
             startButton.textContent = "Start Recording";
         };
+
+        downloadButton.addEventListener("click", () => {
+            changeToSuccessButton(downloadButton, "Copied!")
+
+            setTimeout(() => {
+                downloadButton.classList.remove("btn-success");
+                downloadButton.classList.add("btn-outline-dark");
+                downloadButton.textContent = "Download Audio";
+            }, 1200);
+        });
     }
 
     // Type to the AI chatbot
@@ -205,6 +223,20 @@ document.addEventListener("DOMContentLoaded", () => {
         } else {
             aiInput.style.borderRadius = "24px";
         }
+    });
+
+    copyButton.addEventListener("click", () => {
+
+        const text = transcriptBox.innerText;
+        navigator.clipboard.writeText(text)
+
+        changeToSuccessButton(copyButton, "Copied!")
+
+        setTimeout(() => {
+            copyButton.classList.remove("btn-success");
+            copyButton.classList.add("btn-outline-dark");
+            copyButton.textContent = "Copy";
+        }, 1200);
     });
 });
 
