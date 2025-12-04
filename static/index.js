@@ -9,7 +9,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const transcriptBox = document.getElementById("transcript-box");
     const chatBox = document.getElementById("chat-box");
-    const spinner = document.getElementById("spinner");
+    const spinnerTop = document.getElementById("spinner-top");
+    const spinnerBottom = document.getElementById("spinner-bottom");
     const downloadButton = document.getElementById("download-button");
     const copyButton = document.getElementById("copy-transcript");
 
@@ -17,14 +18,6 @@ document.addEventListener("DOMContentLoaded", () => {
     let audioChunks = [];
 
     // Functions
-
-    // Shows and hides the loading spinner
-    function startSpinner() {
-        spinner.style.display = "block";
-    }
-    function stopSpinner() {
-        spinner.style.display = "none";
-    }
 
     // Renders the text inside the transcript box
     function renderTranscript(text, box) {
@@ -85,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const formData = new FormData();
             formData.append("file", file);
 
-            startSpinner();
+            spinnerTop.style.display = "block";
 
             const response = await fetch("/upload_audio", {
                 method: "POST",
@@ -93,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             const data = await response.json();
 
-            stopSpinner();
+            spinnerTop.style.display = "none";
 
             renderTranscript(data.transcript, transcriptBox)
             renderChat(false, data.ai_response)
@@ -127,8 +120,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const formData = new FormData();
                 formData.append("file", audioBlob, "input.wav");
 
-                startSpinner();
-                // TODO: Turn this into an MP3
+                spinnerTop.style.display = "block";
+
                 const url = URL.createObjectURL(audioBlob);
                 downloadButton.href = url;
                 downloadButton.download = "recording.wav";
@@ -140,7 +133,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 const data = await response.json();
 
-                stopSpinner();
+                spinnerTop.style.display = "none";
 
                 renderTranscript(data.transcript, transcriptBox)
                 renderChat(false, data.ai_response)
@@ -188,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // Clears the input field after submitting
         aiInput.value = "";
 
-        startSpinner();
+        spinnerBottom.style.display = "block";
 
         // Sends the input to the backend
         const response = await fetch("/send_text", {
@@ -198,7 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
         const data = await response.json();
 
-        stopSpinner();
+        spinnerBottom.style.display = "none";
 
         // Render AI response
         renderChat(false, data.ai_response)
