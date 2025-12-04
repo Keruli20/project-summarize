@@ -1,4 +1,4 @@
-from flask import Flask, flash, redirect, render_template, jsonify, request, session
+from flask import Flask, render_template, jsonify, request, session
 from openai import OpenAI
 from dotenv import load_dotenv
 import os

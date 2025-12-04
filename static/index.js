@@ -3,10 +3,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const fileinput = document.getElementById("file-input");
     const aiForm = document.getElementById("ai-form");
     const aiInput = document.getElementById("ai-input");
-
     const startButton = document.getElementById("start-button");
     const stopButton = document.getElementById("stop-button");
-
     const transcriptBox = document.getElementById("transcript-box");
     const chatBox = document.getElementById("chat-box");
     const spinnerTop = document.getElementById("spinner-top");
@@ -51,7 +49,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Change download & copy button to success state
-    function changeToSuccessButton(button, text) {
+    function changeToSuccess(button, text) {
         button.classList.remove("btn-outline-dark");
         button.classList.add("btn-success");
         button.textContent = text;
@@ -154,10 +152,12 @@ document.addEventListener("DOMContentLoaded", () => {
             startButton.classList.add("btn-dark");
             startButton.textContent = "Start Recording";
         };
-
+        
         downloadButton.addEventListener("click", () => {
-            changeToSuccessButton(downloadButton, "Copied!")
+            // Change to success button
+            changeToSuccess(downloadButton, "Copied!")
 
+            // Change back to original button
             setTimeout(() => {
                 downloadButton.classList.remove("btn-success");
                 downloadButton.classList.add("btn-outline-dark");
@@ -197,6 +197,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderChat(false, data.ai_response)
     });
 
+    // TODO: Explain this
     aiInput.addEventListener("input", () => {
         aiInput.style.height = "auto";
 
@@ -218,13 +219,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
+    // Copies the text in the transcript box
     copyButton.addEventListener("click", () => {
-
         const text = transcriptBox.innerText;
         navigator.clipboard.writeText(text)
 
-        changeToSuccessButton(copyButton, "Copied!")
+        // Change to success button
+        changeToSuccess(copyButton, "Copied!")
 
+        // Change back to original button
         setTimeout(() => {
             copyButton.classList.remove("btn-success");
             copyButton.classList.add("btn-outline-dark");

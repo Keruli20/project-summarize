@@ -22,10 +22,11 @@ main.container {
     overflow-y: auto;
 }
 
-/* All buttons on the page */
+/* All Buttons */
 .btn {
     padding: 0.6rem 1.2rem;
     border-radius: 9999px;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* Chat Bubble */
@@ -39,7 +40,7 @@ main.container {
     margin-left: auto;
 }
 
-/* AI Input */
+/* AI Input Bar*/
 #ai-input {
     resize: none;
     overflow-y: auto;
@@ -48,6 +49,6 @@ main.container {
     max-height: 120px;
 }
 
-#copy-transcript {
+/* .btn-outline-dark {
     transition: background-color 0.2s ease, color 0.2s ease;
-}
+} */
