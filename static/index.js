@@ -71,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // Ensure that file is present
             const file = fileinput.files[0];
-            if (!file) return alert("Please upload an audio file.");
+            if (!file) return;
 
             const formData = new FormData();
             formData.append("file", file);
@@ -197,7 +197,6 @@ document.addEventListener("DOMContentLoaded", () => {
         renderChat(false, data.ai_response)
     });
 
-    // TODO: Explain this
     aiInput.addEventListener("input", () => {
         aiInput.style.height = "auto";
 
@@ -212,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
             aiInput.style.overflowY = "auto";
         }
 
-        if (height <= 50) {
+        if (height <= 60) {
             aiInput.style.borderRadius = "9999px";
         } else {
             aiInput.style.borderRadius = "24px";
