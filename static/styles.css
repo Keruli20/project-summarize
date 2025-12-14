@@ -18,7 +18,7 @@ main.container {
 .chat-box {
     background: white;
     padding: 1.2rem;
-    height: 80vh;
+    height: 60vh;
     overflow-y: auto;
 }
 
